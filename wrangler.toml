@@ -4,4 +4,7 @@ publish = ".svelte-kit/cloudflare"
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [build.environment]
-NODE_VERSION = "18" 
+NODE_VERSION = "18"
+
+[site]
+bucket = ".svelte-kit/cloudflare" 
