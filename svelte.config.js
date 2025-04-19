@@ -10,7 +10,8 @@ const config = {
 				include: ['/*'],
 				exclude: ['<all>']
 			}
-		})
+		}),
+		appDir: 'app'
 	},
 	preprocess: vitePreprocess()
 };
