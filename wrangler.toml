@@ -1,6 +1,7 @@
 [build]
 command = "npm install && npm run build"
 publish = ".svelte-kit/cloudflare"
+pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [build.environment]
 NODE_VERSION = "18" 
