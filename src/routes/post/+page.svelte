@@ -1,7 +1,7 @@
 <script>
   export let data;
 
-  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl } = data;
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler } = data;
 
   const redirectDelaySeconds = 5; // Delay in seconds
 </script>
@@ -27,18 +27,32 @@
     <meta name="twitter:title" content="Link Redirect" />
     <meta name="twitter:description" content="View the content at {redirectUrl}" />
 
-    <!-- Meta Refresh for redirection -->
-    <meta http-equiv="refresh" content="{redirectDelaySeconds};url={redirectUrl}" />
+    <!-- Meta Refresh for redirection - ONLY FOR NON-CRAWLERS -->
+    {#if !isCrawler}
+      <meta http-equiv="refresh" content="{redirectDelaySeconds};url={redirectUrl}" />
+    {/if}
   {/if}
 </svelte:head>
 
 <h1>Please wait...</h1>
 
 {#if imageSrc}
-  <p>You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.</p>
+  <p>
+    {#if isCrawler}
+      Sharing preview for {redirectUrl}.
+    {:else}
+      You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.
+    {/if}
+  </p>
   <img src={imageSrc} alt="Preview Image" style="max-width: 100%; height: auto;" />
 {:else if redirectUrl}
-  <p>Redirecting you to {redirectUrl} shortly...</p>
+  <p>
+    {#if isCrawler}
+      Sharing preview for {redirectUrl}.
+    {:else}
+      Redirecting you to {redirectUrl} shortly...
+    {/if}
+  </p>
 {:else}
   <p>Invalid link parameters provided.</p>
 {/if}
