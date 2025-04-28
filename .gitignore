@@ -114,3 +114,11 @@ build
 
 # Stores user-specific env variables
 .env.local
+
+/package-lock.json
+
+# SvelteKit build/dev files
+/.svelte-kit
+
+# Environment variables
+.env
