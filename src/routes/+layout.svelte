@@ -1,36 +1,40 @@
 <script>
-  import { base } from '$app/paths';
+  import '../app.css'; // Optional: for global styles
 </script>
 
-<nav>
-  <a href="{base}/" class="logo">ComicsMentor</a>
-  <div class="nav-links">
-    <a href="{base}/">Home</a>
-    <a href="{base}/comics">Comics</a>
-    <a href="{base}/contact">Contact</a>
-    <a href="{base}/about">About</a>
-  </div>
-</nav>
+<header>
+  <nav>
+    <a href=".">Home</a>
+    <a href="#">Comics</a> <!-- Update href later if needed -->
+    <a href="#">Contact</a> <!-- Update href later if needed -->
+    <a href="#">About</a>   <!-- Update href later if needed -->
+  </nav>
+</header>
 
-<slot />
+<main>
+  <slot /> <!-- Page content will be injected here -->
+</main>
 
 <style>
+  header {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+  }
   nav {
     display: flex;
-    justify-content: space-between;
-    padding: 1.5rem;
-    background: #1a1a1a;
-    color: white;
+    gap: 1rem;
+    justify-content: center; /* Center links or adjust as needed */
   }
-
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-  }
-
-  a {
-    color: white;
+  nav a {
     text-decoration: none;
-    font-weight: 500;
+    color: #333;
+    font-weight: bold;
+  }
+  nav a:hover {
+    color: #007bff;
+  }
+  main {
+    padding: 1rem;
   }
 </style>
