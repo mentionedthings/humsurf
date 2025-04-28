@@ -3,13 +3,15 @@
 
   let targetUrl = '';
   let imageFilename = ''; // User enters only the filename, e.g., 'my-image.jpg'
+  let customTitle = ''; // Add state for custom title
   let generatedUrl = ''; // Variable to store the generated URL
 
   function handleSubmit(e) {
     e.preventDefault();
     // Construct the full URL using the current origin
     const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}`;
+    // Encode all parameters and include the title
+    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}`;
   }
 </script>
 
@@ -23,6 +25,10 @@
   <div>
     <label for="imageInput">Image Filename (must be in `static/images`):</label>
     <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
+  </div>
+  <div>
+    <label for="titleInput">Custom Title (for link preview):</label>
+    <input id="titleInput" type="text" bind:value={customTitle} placeholder="Optional: Custom Title Here" />
   </div>
   <button type="submit">Generate Link</button>
 </form>
