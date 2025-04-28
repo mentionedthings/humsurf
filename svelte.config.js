@@ -1,6 +1,7 @@
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 // import adapter from '@sveltejs/adapter-static'; // Remove static adapter
-import adapter from '@sveltejs/adapter-auto'; // Add auto adapter
+// import adapter from '@sveltejs/adapter-auto'; // Remove this line
+import adapter from '@sveltejs/adapter-cloudflare'; // Add this line
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,7 +13,14 @@ const config = {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
 		// If your environment is not supported or you settled on a specific environment, switch out the adapter.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
-		adapter: adapter()
+		adapter: adapter({
+			// See the adapter documentation for options:
+			// https://github.com/sveltejs/kit/tree/main/packages/adapter-cloudflare
+			routes: {
+				include: ['/*'],
+				exclude: ['<all>']
+			}
+		})
 	}
 };
 
