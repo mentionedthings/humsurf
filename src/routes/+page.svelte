@@ -1,20 +1,21 @@
 <script>
-  import { goto } from '$app/navigation';
   import { base } from '$app/paths'; // Import base path
 
   let targetUrl = '';
   let imageFilename = ''; // User enters only the filename, e.g., 'my-image.jpg'
+  let generatedUrl = ''; // Variable to store the generated URL
 
-  function handleSubmit() {
-    // Construct the relative path to the post page
-    const postPath = `${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}`;
-    goto(postPath);
+  function handleSubmit(e) {
+    e.preventDefault();
+    // Construct the full URL using the current origin
+    const origin = window.location.origin;
+    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}`;
   }
 </script>
 
-<h1>Create Redirect Post</h1>
+<h1>Create Redirect Link</h1>
 
-<form on:submit|preventDefault={handleSubmit}>
+<form on:submit={handleSubmit}>
   <div>
     <label for="urlInput">Target Website URL:</label>
     <input id="urlInput" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
@@ -23,8 +24,18 @@
     <label for="imageInput">Image Filename (must be in `static/images`):</label>
     <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
   </div>
-  <button type="submit">Create Redirect Page</button>
+  <button type="submit">Generate Link</button>
 </form>
+
+{#if generatedUrl}
+  <div class="generated-link">
+    <h2>Your Shareable Link:</h2>
+    <p>
+      <a href={generatedUrl} target="_blank">{generatedUrl}</a>
+    </p>
+    <p><em>Click the link to test it or copy it to share.</em></p>
+  </div>
+{/if}
 
 <style>
   form {
@@ -54,5 +65,12 @@
   }
   button:hover {
     background-color: #0056b3;
+  }
+  .generated-link {
+    margin-top: 2em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    word-wrap: break-word; /* Ensure long URLs wrap */
   }
 </style>
