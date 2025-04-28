@@ -1,65 +1,57 @@
 <script>
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { base } from '$app/paths'; // Import base path
+  export let data;
 
-  let redirectUrl = '';
-  let imageSrc = '';
-  let countdown = 5; // Seconds to wait
-  let countdownMessage = '';
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl } = data;
 
-  onMount(() => {
-    const params = $page.url.searchParams;
-    redirectUrl = params.get('url') || '#'; // Fallback URL
-    const imageFilename = params.get('image');
-
-    if (imageFilename) {
-      // Construct the relative image path using the base path
-      imageSrc = `${base}/images/${imageFilename}`;
-    } else {
-      imageSrc = ''; // Handle case where image is missing
-    }
-
-    if (redirectUrl && redirectUrl !== '#') {
-       countdownMessage = `Redirecting in ${countdown} seconds...`;
-       const timer = setInterval(() => {
-          countdown -= 1;
-          if (countdown > 0) {
-             countdownMessage = `Redirecting in ${countdown} seconds...`;
-          } else {
-             countdownMessage = 'Redirecting now...';
-             clearInterval(timer);
-             window.location.href = redirectUrl;
-          }
-       }, 1000);
-
-       // Cleanup timer if component is destroyed before redirect
-       return () => clearInterval(timer);
-    } else {
-        countdownMessage = 'No valid redirect URL provided.';
-    }
-  });
+  const redirectDelaySeconds = 5; // Delay in seconds
 </script>
 
-{#if imageSrc}
-  <img src={imageSrc} alt="Post image" />
-{:else}
-  <p>Image not found.</p>
-{/if}
+<svelte:head>
+  <title>Redirecting...</title>
+  {#if redirectUrl}
+    <meta name="description" content="Redirecting you shortly..." />
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Link Redirect" />
+    <meta property="og:description" content="View the content at {redirectUrl}" />
+    {#if absoluteImageSrc}
+      <meta property="og:image" content={absoluteImageSrc} />
+    {/if}
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:type" content="website" />
 
-<p>{countdownMessage}</p>
+    <!-- Twitter Card Tags (optional but recommended) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    {#if absoluteImageSrc}
+      <meta name="twitter:image" content={absoluteImageSrc} />
+    {/if}
+    <meta name="twitter:title" content="Link Redirect" />
+    <meta name="twitter:description" content="View the content at {redirectUrl}" />
+
+    <!-- Meta Refresh for redirection -->
+    <meta http-equiv="refresh" content="{redirectDelaySeconds};url={redirectUrl}" />
+  {/if}
+</svelte:head>
+
+<h1>Please wait...</h1>
+
+{#if imageSrc}
+  <p>You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.</p>
+  <img src={imageSrc} alt="Preview Image" style="max-width: 100%; height: auto;" />
+{:else if redirectUrl}
+  <p>Redirecting you to {redirectUrl} shortly...</p>
+{:else}
+  <p>Invalid link parameters provided.</p>
+{/if}
 
 <style>
   img {
-    max-width: 100%;
-    height: auto;
     display: block;
-    margin: 1rem auto; /* Center image */
-    max-height: 80vh; /* Limit image height */
+    margin: 2em auto;
+    max-width: 80%;
+    border: 1px solid #eee;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   }
-  p {
+  h1, p {
     text-align: center;
-    font-size: 1.2rem;
-    margin-top: 1rem;
   }
 </style>
