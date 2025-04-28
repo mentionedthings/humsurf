@@ -3,10 +3,10 @@ import { fail, redirect } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 
 // --- IMPORTANT ---
-// You MUST set this environment variable in your Cloudflare Pages settings.
-// For local development, you can create a .env file in the project root:
-// PAGE_PASSWORD=your_secret_password
-import { PAGE_PASSWORD } from '$env/dynamic/private';
+// Access the password directly from the environment.
+// You MUST set this environment variable as a SECRET in your Cloudflare Pages settings.
+// For local development, ensure it's defined in your .env file.
+const PAGE_PASSWORD = process.env.PAGE_PASSWORD;
 
 const COOKIE_NAME = 'page_auth';
 
@@ -26,8 +26,9 @@ export const actions = {
 		const data = await request.formData();
 		const password = data.get('password');
 
+		// Check if the variable exists at runtime
 		if (!PAGE_PASSWORD) {
-			console.error('ERROR: PAGE_PASSWORD environment variable is not set!');
+			console.error('ERROR: PAGE_PASSWORD environment variable is not available at runtime!');
 			return fail(500, { message: 'Server configuration error.' });
 		}
 
@@ -41,7 +42,6 @@ export const actions = {
 				secure: !dev, // Use 'secure' only in production (HTTPS)
 				sameSite: 'strict', // Helps prevent CSRF
 			});
-			// No need to redirect, the page will reload via enhance and show content
 			return { success: true };
 		} else {
 			console.log('Login failed: incorrect password.'); // For debugging
@@ -52,7 +52,6 @@ export const actions = {
 	logout: async ({ cookies }) => {
 		console.log('Logout requested, deleting cookie.'); // For debugging
 		cookies.delete(COOKIE_NAME, { path: '/' });
-		// Redirect to the same page to clear the state
 		throw redirect(303, '/');
 	},
 };
