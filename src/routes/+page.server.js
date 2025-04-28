@@ -6,7 +6,7 @@ import { dev } from '$app/environment';
 // You MUST set this environment variable in your Cloudflare Pages settings.
 // For local development, you can create a .env file in the project root:
 // PAGE_PASSWORD=your_secret_password
-import { PAGE_PASSWORD } from '$env/static/private';
+import { PAGE_PASSWORD } from '$env/dynamic/private';
 
 const COOKIE_NAME = 'page_auth';
 
