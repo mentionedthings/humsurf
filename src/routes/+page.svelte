@@ -3,13 +3,14 @@
 
   let targetUrl = '';
   let imageFilename = ''; // User enters only the filename, e.g., 'my-image.jpg'
+  let title = ''; // Add variable for title
   let generatedUrl = ''; // Variable to store the generated URL
 
   function handleSubmit(e) {
     e.preventDefault();
     // Construct the full URL using the current origin
     const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}`;
+    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(title)}`;
   }
 </script>
 
@@ -23,6 +24,10 @@
   <div>
     <label for="imageInput">Image Filename (must be in `static/images`):</label>
     <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
+  </div>
+  <div>
+    <label for="titleInput">Custom Title (for social preview):</label>
+    <input id="titleInput" type="text" bind:value={title} placeholder="Optional: My Awesome Link Title" />
   </div>
   <button type="submit">Generate Link</button>
 </form>

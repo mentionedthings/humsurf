@@ -1,17 +1,17 @@
 <script>
   export let data;
 
-  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler } = data;
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle } = data;
 
   const redirectDelaySeconds = 5; // Delay in seconds
 </script>
 
 <svelte:head>
-  <title>Redirecting...</title>
+  <title>{customTitle || 'Redirecting...'}</title>
   {#if redirectUrl}
     <meta name="description" content="Redirecting you shortly..." />
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="Link Redirect" />
+    <meta property="og:title" content={customTitle} />
     <meta property="og:description" content="View the content at {redirectUrl}" />
     {#if absoluteImageSrc}
       <meta property="og:image" content={absoluteImageSrc} />
@@ -24,7 +24,7 @@
     {#if absoluteImageSrc}
       <meta name="twitter:image" content={absoluteImageSrc} />
     {/if}
-    <meta name="twitter:title" content="Link Redirect" />
+    <meta name="twitter:title" content={customTitle} />
     <meta name="twitter:description" content="View the content at {redirectUrl}" />
 
     <!-- Meta Refresh for redirection - ONLY FOR NON-CRAWLERS -->
@@ -34,7 +34,7 @@
   {/if}
 </svelte:head>
 
-<h1>Please wait...</h1>
+<h1>{customTitle || 'Please wait...'}</h1>
 
 {#if imageSrc}
   <p>
