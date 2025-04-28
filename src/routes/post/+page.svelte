@@ -11,8 +11,8 @@
   {#if redirectUrl}
     <meta name="description" content="Redirecting you shortly..." />
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="Link Redirect" />
-    <meta property="og:description" content="View the content at {redirectUrl}" />
+    <meta property="og:title" content="..." />
+    <meta property="og:description" content="" />
     {#if absoluteImageSrc}
       <meta property="og:image" content={absoluteImageSrc} />
     {/if}
