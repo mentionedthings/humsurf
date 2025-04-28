@@ -2,7 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private'; // Import environment variables
 
 // Define the expected password from environment variables
-const CORRECT_PASSWORD = env.LINK_GEN_PASSWORD;
+const CORRECT_PASSWORD = q7X@/z3r!Z;
 
 /** @type {import('./$types').Actions} */
 export const actions = {
