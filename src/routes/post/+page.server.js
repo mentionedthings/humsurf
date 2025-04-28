@@ -18,7 +18,6 @@ const CRAWLER_USER_AGENTS = [
 export function load({ url, request }) { 
 	const redirectUrl = url.searchParams.get('url');
 	const imageName = url.searchParams.get('image');
-	const customTitle = url.searchParams.get('title'); // <-- Get the title param
 
 	// Basic validation
 	if (!redirectUrl || !imageName) {
@@ -50,7 +49,6 @@ export function load({ url, request }) {
 		imageSrc: imageSrc,
 		absoluteImageSrc: absoluteImageSrc,
 		pageUrl: pageUrl,
-		isCrawler: isCrawler,
-		customTitle: customTitle || 'Link Redirect' // Pass title, fallback if empty
+		isCrawler: isCrawler 
 	};
 }
