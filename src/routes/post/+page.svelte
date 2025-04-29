@@ -9,7 +9,7 @@
 <svelte:head>
   <title>{customTitle}</title>
   {#if redirectUrl}
-    <meta name="description" content="Please Wait..." />
+    <meta name="description" content="..." />
     <!-- Open Graph Tags -->
     <meta property="og:title" content={customTitle} />
     <meta property="og:description" content="" />
