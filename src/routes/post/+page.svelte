@@ -3,13 +3,13 @@
 
   const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle } = data;
 
-  const redirectDelaySeconds = 5; // Delay in seconds
+  const redirectDelaySeconds = 2; // Delay in seconds
 </script>
 
 <svelte:head>
   <title>{customTitle}</title>
   {#if redirectUrl}
-    <meta name="description" content="Redirecting you shortly..." />
+    <meta name="description" content="Please Wait..." />
     <!-- Open Graph Tags -->
     <meta property="og:title" content={customTitle} />
     <meta property="og:description" content="" />
