@@ -34,14 +34,14 @@
   {/if}
 </svelte:head>
 
-<h1>Please wait...</h1>
+<h1>All Comics</h1>
 
 {#if imageSrc}
   <p>
     {#if isCrawler}
       Sharing preview for {redirectUrl}.
     {:else}
-      You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.
+      Check to to {redirectUrl} in {redirectDelaySeconds} seconds.
     {/if}
   </p>
   <p>. <a href={redirectUrl}>click here</a>.</p>
