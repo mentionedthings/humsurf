@@ -34,7 +34,7 @@
   {/if}
 </svelte:head>
 
-<h1>All Comics</h1>
+<h1>Comics Connoisseurs</h1>
 
 {#if imageSrc}
   <p>
@@ -44,7 +44,7 @@
       Check to to {redirectUrl} in {redirectDelaySeconds} seconds.
     {/if}
   </p>
-  <p>. <a href={redirectUrl}>click here</a>.</p>
+  <p>. <a href={redirectUrl}>All Comics</a>.</p>
   <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
 {:else if redirectUrl}
   <p>
