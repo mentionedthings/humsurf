@@ -9,7 +9,7 @@
 <svelte:head>
   <title>{customTitle}</title>
   {#if redirectUrl}
-    <meta name="description" content="..." />
+    <meta name="description" content="Redirecting you shortly..." />
     <!-- Open Graph Tags -->
     <meta property="og:title" content={customTitle} />
     <meta property="og:description" content="" />
@@ -44,7 +44,8 @@
       You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.
     {/if}
   </p>
-  <img src={imageSrc} alt="Preview Image" style="max-width: 100%; height: auto;" />
+  <p>If you are not redirected automatically, <a href={redirectUrl}>click here</a>.</p>
+  <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
 {:else if redirectUrl}
   <p>
     {#if isCrawler}
@@ -58,7 +59,7 @@
 {/if}
 
 <style>
-  img {
+  .preview-image {
     display: block;
     margin: 2em auto;
     max-width: 80%;
