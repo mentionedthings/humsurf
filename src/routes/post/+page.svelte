@@ -1,7 +1,7 @@
 <script>
   export let data;
 
-  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle } = data;
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle, fbAppId } = data;
 
   const redirectDelaySeconds = 2; // Delay in seconds
 </script>
@@ -18,6 +18,9 @@
     {/if}
     <meta property="og:url" content={pageUrl} />
     <meta property="og:type" content="website" />
+    {#if fbAppId}
+      <meta property="fb:app_id" content={fbAppId} />
+    {/if}
 
     <!-- Twitter Card Tags (optional but recommended) -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -34,17 +37,17 @@
   {/if}
 </svelte:head>
 
-<h1>Comics Connoisseurs</h1>
+<h1>Wholesome Comics</h1>
 
 {#if imageSrc}
   <p>
     {#if isCrawler}
       Sharing preview for {redirectUrl}.
     {:else}
-      Check to to {redirectUrl} in {redirectDelaySeconds} seconds.
+      You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.
     {/if}
   </p>
-  <p>. <a href={redirectUrl}>All Comics</a>.</p>
+  <p>..., <a href={redirectUrl}>All Comics</a>.</p>
   <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
 {:else if redirectUrl}
   <p>
