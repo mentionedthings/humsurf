@@ -1,6 +1,7 @@
 // src/routes/post/+page.server.js
 import { error, redirect } from '@sveltejs/kit';
 import { base } from '$app/paths';
+import { env } from '$env/dynamic/private'; // Import env
 
 // List of common crawler user agent substrings
 const CRAWLER_USER_AGENTS = [
@@ -20,6 +21,9 @@ export function load({ url, request }) {
 	const redirectUrl = url.searchParams.get('url');
 	const imageName = url.searchParams.get('image');
 	const customTitle = url.searchParams.get('title'); // Read the title parameter
+
+	// Read Facebook App ID from environment variables
+	const fbAppId = env.FACEBOOK_APP_ID; 
 
 	// Basic validation for redirectUrl and imageName (title is optional)
 	if (!redirectUrl || !imageName) {
@@ -56,6 +60,7 @@ export function load({ url, request }) {
 		imageSrc: imageSrc,
 		absoluteImageSrc: absoluteImageSrc,
 		pageUrl: pageUrl,
+		fbAppId: fbAppId, // Pass the App ID
 		// Let the page know if it's a crawler (for the meta refresh logic)
 		isCrawler: isCrawler 
 	};
