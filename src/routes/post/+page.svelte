@@ -1,7 +1,7 @@
 <script>
   export let data;
 
-  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle, fbAppId } = data;
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle, fbAppId, isMobile } = data;
 
   const redirectDelaySeconds = 2; // Delay in seconds
 </script>
@@ -30,36 +30,47 @@
     <meta name="twitter:title" content={customTitle} />
     <meta name="twitter:description" content="View the content at {redirectUrl}" />
 
-    <!-- Meta Refresh for redirection - ONLY FOR NON-CRAWLERS -->
-    {#if !isCrawler}
+    <!-- Meta Refresh for redirection - ONLY FOR MOBILE NON-CRAWLERS -->
+    {#if isMobile && !isCrawler}
       <meta http-equiv="refresh" content="{redirectDelaySeconds};url={redirectUrl}" />
     {/if}
   {/if}
 </svelte:head>
 
-<h1>Please wait...</h1>
+<main>
+  {#if redirectUrl}
+    {#if isMobile && !isCrawler}
+      <!-- Content for Mobile Users (who will be redirected) -->
+      <h1>Redirecting you shortly...</h1>
+      <p>
+        {#if isCrawler}
+          Sharing preview for {redirectUrl}.
+        {:else}
+          You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.
+        {/if}
+      </p>
+      <p>If you are not redirected automatically, <a href={redirectUrl}>click here</a>.</p>
+    {:else if !isMobile && !isCrawler}
+      <!-- Content for Desktop Users (who will NOT be redirected) -->
+      <h1>Link Information</h1>
+      <p>This page provides a preview for shared links.</p>
+      <p>The target URL is: <a href={redirectUrl} target="_blank" rel="noopener noreferrer">{redirectUrl}</a></p>
+    {:else if isCrawler}
+      <!-- Content for Crawlers (who will NOT be redirected) -->
+      <h1>Link Preview Information</h1>
+      <p>This page provides metadata for link previews on social media and other platforms.</p>
+      <p>The target URL is: {redirectUrl}</p>
+    {/if}
 
-{#if imageSrc}
-  <p>
-    {#if isCrawler}
-      Sharing preview for {redirectUrl}.
-    {:else}
-      You will be redirected to {redirectUrl} in {redirectDelaySeconds} seconds.
+    {#if imageSrc && (!isMobile || isCrawler)} <!-- Show image for crawlers or desktop users -->
+      <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
     {/if}
-  </p>
-  <p>If you are not redirected automatically, <a href={redirectUrl}>click here</a>.</p>
-  <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
-{:else if redirectUrl}
-  <p>
-    {#if isCrawler}
-      Sharing preview for {redirectUrl}.
-    {:else}
-      Redirecting you to {redirectUrl} shortly...
-    {/if}
-  </p>
-{:else}
-  <p>Invalid link parameters provided.</p>
-{/if}
+
+  {:else}
+    <!-- Fallback content if redirectUrl is missing -->
+    <p>Invalid link parameters provided.</p>
+  {/if}
+</main>
 
 <style>
   .preview-image {
