@@ -1,7 +1,7 @@
 <script>
   export let data;
 
-  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle } = data;
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle, fbAppId } = data;
 
   const redirectDelaySeconds = 2; // Delay in seconds
 </script>
@@ -18,6 +18,9 @@
     {/if}
     <meta property="og:url" content={pageUrl} />
     <meta property="og:type" content="website" />
+    {#if fbAppId}
+      <meta property="fb:app_id" content={fbAppId} />
+    {/if}
 
     <!-- Twitter Card Tags (optional but recommended) -->
     <meta name="twitter:card" content="summary_large_image" />
