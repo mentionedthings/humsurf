@@ -9,7 +9,7 @@
 <svelte:head>
   <title>{customTitle}</title>
   {#if redirectUrl}
-    <meta name="description" content="Redirecting you shortly..." />
+    <meta name="description" content="..." />
     <!-- Open Graph Tags -->
     <meta property="og:title" content={customTitle} />
     <meta property="og:description" content="" />
@@ -61,14 +61,13 @@
       <p>This page provides metadata for link previews on social media and other platforms.</p>
       <p>The target URL is: {redirectUrl}</p>
     {/if}
-
-    {#if imageSrc && (!isMobile || isCrawler)} <!-- Show image for crawlers or desktop users -->
-      <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
-    {/if}
-
   {:else}
     <!-- Fallback content if redirectUrl is missing -->
     <p>Invalid link parameters provided.</p>
+  {/if}
+
+  {#if imageSrc && (!isMobile || isCrawler)} <!-- Show image for crawlers or desktop users -->
+    <img src={imageSrc} alt="Preview for {customTitle || 'redirect link'}" class="preview-image" />
   {/if}
 </main>
 
