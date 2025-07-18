@@ -53,13 +53,13 @@
     {:else if !isMobile && !isCrawler}
       <!-- Content for Desktop Users (who will NOT be redirected) -->
       <h1>Link Information</h1>
-      <p>This page provides a preview for shared links.</p>
+      <p> </p>
       <p>The target URL is: <a href={redirectUrl} target="_blank" rel="noopener noreferrer">{redirectUrl}</a></p>
     {:else if isCrawler}
       <!-- Content for Crawlers (who will NOT be redirected) -->
-      <h1>Link Preview Information</h1>
+      <h1>Comics</h1>
       <p>This page provides metadata for link previews on social media and other platforms.</p>
-      <p>The target URL is: {redirectUrl}</p>
+      <p>See more go to: {redirectUrl}</p>
     {/if}
   {:else}
     <!-- Fallback content if redirectUrl is missing -->
