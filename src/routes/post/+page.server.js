@@ -62,6 +62,7 @@ export function load({ url, request }) {
 		pageUrl: pageUrl,
 		fbAppId: fbAppId, // Pass the App ID
 		// Let the page know if it's a crawler (for the meta refresh logic)
-		isCrawler: isCrawler 
+		isCrawler: isCrawler,
+		isMobile: isMobile // Pass mobile status to the page
 	};
 }
