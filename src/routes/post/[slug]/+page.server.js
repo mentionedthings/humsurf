@@ -21,7 +21,7 @@ export function load({ params, request, url }) {
   }
 
   const pageUrl = url.toString();
-  const imageSrc = imageName ? `${base}/images/${imageName.split('/').pop()}` : null;
+  const imageSrc = imageName ? `${base}/images/${encodeURIComponent(imageName.split('/').pop())}` : null;
   const absoluteImageSrc = imageSrc ? `${url.origin}${imageSrc}` : null;
 
   return {
