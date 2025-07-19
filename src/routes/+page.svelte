@@ -11,12 +11,22 @@
   // Determine if authenticated based on the form action result
   $: isAuthenticated = form?.success === true;
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const origin = window.location.origin;
-    // Generate a slug from the customTitle
-    const slug = customTitle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    generatedUrl = `${origin}${base}/post/${slug}?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}`;
+    const formData = new FormData();
+    formData.append('url', targetUrl);
+    formData.append('image', imageFilename);
+    formData.append('title', customTitle);
+    const res = await fetch('?/createShortLink', {
+      method: 'POST',
+      body: formData
+    });
+    const result = await res.json();
+    if (result.id) {
+      generatedUrl = `${window.location.origin}${base}/post/${result.id}`;
+    } else {
+      generatedUrl = 'Error creating link.';
+    }
   }
 </script>
 
