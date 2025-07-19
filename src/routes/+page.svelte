@@ -17,7 +17,7 @@
     formData.append('url', targetUrl);
     formData.append('image', imageFilename);
     formData.append('title', customTitle);
-    const res = await fetch('?/createShortLink', {
+    const res = await fetch('/api/createShortLink', {
       method: 'POST',
       body: formData
     });
