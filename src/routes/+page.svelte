@@ -14,7 +14,9 @@
   function handleSubmit(e) {
     e.preventDefault();
     const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}`;
+    // Generate a slug from the customTitle
+    const slug = customTitle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    generatedUrl = `${origin}${base}/post/${slug}?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}`;
   }
 </script>
 
