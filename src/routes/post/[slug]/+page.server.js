@@ -1,15 +1,15 @@
 import { error, redirect } from '@sveltejs/kit';
 import { base } from '$app/paths';
 import { env } from '$env/dynamic/private';
-import { getLink } from '../../../lib/linkStore.js';
 
-export function load({ params, request, url }) {
+export async function load({ params, request, url, platform }) {
   const id = params.slug;
-  const link = getLink(id);
-  if (!link) {
+  // Lookup in Cloudflare KV
+  const value = await platform.env.LINKS_KV.get(id);
+  if (!value) {
     throw error(404, 'Link not found');
   }
-  const { url: redirectUrl, image: imageName, title: customTitle } = link;
+  const { url: redirectUrl, image: imageName, title: customTitle } = JSON.parse(value);
   const fbAppId = env.FACEBOOK_APP_ID;
 
   const userAgent = request.headers.get('user-agent') || '';

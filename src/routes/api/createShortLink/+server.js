@@ -1,7 +1,6 @@
 import { json } from '@sveltejs/kit';
-import { createLink } from '../../../lib/linkStore.js';
 
-export async function POST({ request }) {
+export async function POST({ request, platform }) {
   const data = await request.formData();
   const url = data.get('url');
   const image = data.get('image');
@@ -9,6 +8,10 @@ export async function POST({ request }) {
   if (!url || !image || !title) {
     return json({ error: 'Missing required fields.' }, { status: 400 });
   }
-  const id = createLink({ url, image, title });
+  // Generate a short random ID
+  const id = Math.random().toString(36).substring(2, 8);
+  // Store in Cloudflare KV
+  const value = JSON.stringify({ url, image, title });
+  await platform.env.LINKS_KV.put(id, value);
   return json({ id });
 } 
