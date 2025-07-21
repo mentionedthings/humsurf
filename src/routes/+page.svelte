@@ -25,7 +25,7 @@
     if (result.id) {
       generatedUrl = `${window.location.origin}${base}/post/${result.id}`;
     } else {
-      generatedUrl = 'Error creating link.';
+      generatedUrl = result.error || 'Error creating link.';
     }
   }
 </script>
