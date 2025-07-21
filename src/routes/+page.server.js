@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { createLink } from '../lib/linkStore.js';
+import { env } from '$env/dynamic/private'; // Import environment variables
 
+// Define the expected password from environment variables
 const CORRECT_PASSWORD = env.LINK_GEN_PASSWORD;
 
 /** @type {import('./$types').Actions} */
@@ -12,25 +12,19 @@ export const actions = {
 
 		if (!CORRECT_PASSWORD) {
 			console.error('LINK_GEN_PASSWORD environment variable is not set.');
+			// Optionally, fail gracefully or allow access in dev mode?
+			// For now, fail if the password isn't set server-side.
 			return fail(500, { error: 'Server configuration error.' });
 		}
 
 		if (password === CORRECT_PASSWORD) {
+			// Password is correct, return success
+			// This will make `form.success` true on the page
 			return { success: true };
 		} else {
+			// Password is incorrect, return failure
+			// This will make `form.incorrect` true on the page
 			return fail(401, { incorrect: true });
 		}
-	},
-
-  createShortLink: async ({ request, url }) => {
-    const data = await request.formData();
-    const targetUrl = data.get('url');
-    const image = data.get('image');
-    const title = data.get('title');
-    if (!targetUrl || !image || !title) {
-      return fail(400, { error: 'Missing required fields.' });
-    }
-    const id = createLink({ url: targetUrl, image, title });
-    return { id };
-  }
+	}
 };

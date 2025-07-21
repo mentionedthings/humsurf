@@ -11,22 +11,10 @@
   // Determine if authenticated based on the form action result
   $: isAuthenticated = form?.success === true;
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('url', targetUrl);
-    formData.append('image', imageFilename);
-    formData.append('title', customTitle);
-    const res = await fetch('/api/createShortLink', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await res.json();
-    if (result.id) {
-      generatedUrl = `${window.location.origin}${base}/post/${result.id}`;
-    } else {
-      generatedUrl = result.error || 'Error creating link.';
-    }
+    const origin = window.location.origin;
+    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}`;
   }
 </script>
 
