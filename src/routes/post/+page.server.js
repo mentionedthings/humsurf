@@ -21,9 +21,11 @@ export function load({ url, request }) {
 	const redirectUrl = url.searchParams.get('url');
 	const imageName = url.searchParams.get('image');
 	const customTitle = url.searchParams.get('title'); // Read the title parameter
+	const customDescription = url.searchParams.get('description'); // Read the description parameter
 
-	// Read Facebook App ID from environment variables
-	const fbAppId = env.FACEBOOK_APP_ID; 
+	// Read Facebook App ID and Site Name from environment variables
+	const fbAppId = env.FACEBOOK_APP_ID;
+	const siteName = env.SITE_NAME || 'Humsurf'; // Default to 'Humsurf' if not set 
 
 	// Basic validation for redirectUrl and imageName (title is optional)
 	if (!redirectUrl || !imageName) {
@@ -56,11 +58,13 @@ export function load({ url, request }) {
 	return {
 		redirectUrl: redirectUrl,
 		imageName: imageName,
-		customTitle: customTitle || 'Redirecting...', // Provide a default title if none is given
+		customTitle: customTitle || 'Redirecting...',
+		customDescription: customDescription || 'Click to see more.', // Provide a default description
 		imageSrc: imageSrc,
 		absoluteImageSrc: absoluteImageSrc,
 		pageUrl: pageUrl,
 		fbAppId: fbAppId, // Pass the App ID
+		siteName: siteName, // Pass the site name
 		// Let the page know if it's a crawler (for the meta refresh logic)
 		isCrawler: isCrawler,
 		isMobile: isMobile // Pass mobile status to the page

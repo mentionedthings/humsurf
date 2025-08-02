@@ -3,7 +3,9 @@
   export let form; // Receive form action results
 
   let targetUrl = '';
+  let imageFilename = ''; // User enters only the filename, e.g., 'my-image.jpg'
   let customTitle = ''; // Add state for custom title
+  let customDescription = ''; // Add state for custom description
   let generatedUrl = ''; // Variable to store the generated URL
   let password = ''; // State for password input
 
@@ -12,20 +14,8 @@
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    // Create a URL-friendly slug from the title
-    const imageSlug = customTitle
-      .toLowerCase()
-      .trim()
-      .replace(/[\s_]+/g, '-') // Replace spaces and underscores with a dash
-      .replace(/[^a-z0-9-]/g, '') // Remove any non-alphanumeric characters except dashes
-      .replace(/--+/g, '-'); // Replace multiple dashes with a single dash
-
-    // Assume a .png extension. You can change this if you use other formats.
-    const imageFilename = `${imageSlug}.png`;
-
     const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}`;
+    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}&description=${encodeURIComponent(customDescription)}`;
   }
 </script>
 
@@ -39,8 +29,16 @@
       <input id="urlInput" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
     </div>
     <div>
-      <label for="titleInput">Post Title (for preview and image name):</label>
-      <input id="titleInput" type="text" bind:value={customTitle} required placeholder="My Awesome New Post" />
+      <label for="imageInput">Image Filename (must be in `static/images`):</label>
+      <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
+    </div>
+    <div>
+      <label for="titleInput">Custom Title (for link preview):</label>
+      <input id="titleInput" type="text" bind:value={customTitle} placeholder="Optional: Custom Title Here" />
+    </div>
+    <div>
+      <label for="descriptionInput">Custom Description (for link preview):</label>
+      <textarea id="descriptionInput" bind:value={customDescription} placeholder="A catchy description of the content."></textarea>
     </div>
     <button type="submit">Generate Link</button>
   </form>

@@ -1,7 +1,7 @@
 <script>
   export let data;
 
-  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle, fbAppId, isMobile } = data;
+  const { redirectUrl, imageSrc, absoluteImageSrc, pageUrl, isCrawler, customTitle, customDescription, fbAppId, siteName, isMobile } = data;
 
   const redirectDelaySeconds = 2; // Delay in seconds
 </script>
@@ -12,12 +12,13 @@
     <meta name="description" content="..." />
     <!-- Open Graph Tags -->
     <meta property="og:title" content={customTitle} />
-    <meta property="og:description" content="" />
+    <meta property="og:description" content={customDescription} />
     {#if absoluteImageSrc}
       <meta property="og:image" content={absoluteImageSrc} />
     {/if}
     <meta property="og:url" content={pageUrl} />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
     {#if fbAppId}
       <meta property="fb:app_id" content={fbAppId} />
     {/if}
@@ -52,9 +53,9 @@
       <p>If you are not redirected automatically, <a href={redirectUrl}>click here</a>.</p>
     {:else if !isMobile && !isCrawler}
       <!-- Content for Desktop Users (who will NOT be redirected) -->
-      <h1>{customTitle}</h1>
-      <p>You can view the original content by following this link:</p>
-      <p><a href={redirectUrl} target="_blank" rel="noopener noreferrer">{redirectUrl}</a></p>
+      <h1>Link Information</h1>
+      <p> </p>
+      <p>The target URL is: <a href={redirectUrl} target="_blank" rel="noopener noreferrer">{redirectUrl}</a></p>
     {:else if isCrawler}
       <!-- Content for Crawlers (who will NOT be redirected) -->
       <h1>Comics</h1>
