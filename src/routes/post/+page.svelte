@@ -52,9 +52,9 @@
       <p>If you are not redirected automatically, <a href={redirectUrl}>click here</a>.</p>
     {:else if !isMobile && !isCrawler}
       <!-- Content for Desktop Users (who will NOT be redirected) -->
-      <h1>Link Information</h1>
-      <p> </p>
-      <p>The target URL is: <a href={redirectUrl} target="_blank" rel="noopener noreferrer">{redirectUrl}</a></p>
+      <h1>{customTitle}</h1>
+      <p>You can view the original content by following this link:</p>
+      <p><a href={redirectUrl} target="_blank" rel="noopener noreferrer">{redirectUrl}</a></p>
     {:else if isCrawler}
       <!-- Content for Crawlers (who will NOT be redirected) -->
       <h1>Comics</h1>
