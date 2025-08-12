@@ -7,40 +7,38 @@
   let customTitle = ''; // Add state for custom title
   let customDescription = ''; // Add state for custom description
   let generatedUrl = ''; // Variable to store the generated URL
-
-  // When the form action returns a slug, construct the full short URL
-  $: if (form?.slug) {
-    const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/${form.slug}`;
-  }
   let password = ''; // State for password input
 
   // Determine if authenticated based on the form action result
   $: isAuthenticated = form?.success === true;
 
-
+  function handleSubmit(e) {
+    e.preventDefault();
+    const origin = window.location.origin;
+    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}&description=${encodeURIComponent(customDescription)}`;
+  }
 </script>
 
 <h1>Create Redirect Link</h1>
 
 {#if isAuthenticated}
   <!-- Show link generation form only if authenticated -->
-  <form method="POST" action="?/createLink">
+  <form on:submit={handleSubmit}>
     <div>
       <label for="urlInput">Target Website URL:</label>
-      <input id="urlInput" name="targetUrl" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
+      <input id="urlInput" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
     </div>
     <div>
       <label for="imageInput">Image Filename (must be in `static/images`):</label>
-      <input id="imageInput" name="imageName" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
+      <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
     </div>
     <div>
       <label for="titleInput">Custom Title (for link preview):</label>
-      <input id="titleInput" name="customTitle" type="text" bind:value={customTitle} placeholder="Optional: Custom Title Here" />
+      <input id="titleInput" type="text" bind:value={customTitle} placeholder="Optional: Custom Title Here" />
     </div>
     <div>
       <label for="descriptionInput">Custom Description (for link preview):</label>
-      <textarea id="descriptionInput" name="customDescription" bind:value={customDescription} placeholder="A catchy description of the content."></textarea>
+      <textarea id="descriptionInput" bind:value={customDescription} placeholder="A catchy description of the content."></textarea>
     </div>
     <button type="submit">Generate Link</button>
   </form>
