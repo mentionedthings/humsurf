@@ -6,39 +6,38 @@
   let imageFilename = ''; // User enters only the filename, e.g., 'my-image.jpg'
   let customTitle = ''; // Add state for custom title
   let customDescription = ''; // Add state for custom description
-  let generatedUrl = ''; // Variable to store the generated URL
   let password = ''; // State for password input
 
   // Determine if authenticated based on the form action result
-  $: isAuthenticated = form?.success === true;
+  // Determine if authenticated based on the form action result
+  $: isAuthenticated = form?.success === true && !form?.created;
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}&description=${encodeURIComponent(customDescription)}`;
-  }
+  // When a link is created, construct the full URL to display
+  $: generatedUrl = form?.created && form?.slug ? `${window.location.origin}${base}/${form.slug}` : '';
+
+
 </script>
 
 <h1>Create Redirect Link</h1>
 
 {#if isAuthenticated}
   <!-- Show link generation form only if authenticated -->
-  <form on:submit={handleSubmit}>
+  <form method="POST" action="?/create">
     <div>
       <label for="urlInput">Target Website URL:</label>
-      <input id="urlInput" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
+      <input id="urlInput" name="url" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
     </div>
     <div>
       <label for="imageInput">Image Filename (must be in `static/images`):</label>
-      <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
+      <input id="imageInput" name="image" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
     </div>
     <div>
       <label for="titleInput">Custom Title (for link preview):</label>
-      <input id="titleInput" type="text" bind:value={customTitle} placeholder="Optional: Custom Title Here" />
+      <input id="titleInput" name="title" type="text" bind:value={customTitle} placeholder="Optional: Custom Title Here" />
     </div>
     <div>
       <label for="descriptionInput">Custom Description (for link preview):</label>
-      <textarea id="descriptionInput" bind:value={customDescription} placeholder="A catchy description of the content."></textarea>
+      <textarea id="descriptionInput" name="description" bind:value={customDescription} placeholder="A catchy description of the content."></textarea>
     </div>
     <button type="submit">Generate Link</button>
   </form>
