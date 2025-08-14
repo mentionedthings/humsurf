@@ -4,5 +4,5 @@ compatibility_flags = [ "nodejs_compat" ]
 
 [[kv_namespaces]]
 binding = "LINKS"
-id = "YOUR_KV_NAMESPACE_ID_HERE"
-preview_id = "YOUR_KV_NAMESPACE_ID_HERE"
+id = "263ec3ed304948fea2ef708aec524a05"
+preview_id = "263ec3ed304948fea2ef708aec524a05"
