@@ -1,9 +1,3 @@
-name = "protext"
+name = "humsurf"
 compatibility_date = "2024-07-21"
-compatibility_flags = [ "nodejs_compat" ]
-
-
-[[kv_namespaces]]
-binding = "LINKS"
-id = "0b1ff56789194213b0d9f3ef0e581202"
-preview_id = "0b1ff56789194213b0d9f3ef0e581202"
+compatibility_flags = [ "nodejs_compat" ] 

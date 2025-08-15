@@ -9,10 +9,7 @@ const config = {
 
 	kit: {
 		// Use the Cloudflare adapter for deployment
-		adapter: adapter(),
-		alias: {
-			'$lib': 'src/lib'
-		}
+		adapter: adapter()
 	}
 };
 
