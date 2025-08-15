@@ -2,7 +2,20 @@ name = "protext"
 compatibility_date = "2024-07-21"
 compatibility_flags = [ "nodejs_compat" ]
 
-[[kv_namespaces]]
-binding = "LINKS"
-id = "0b1ff56789194213b0d9f3ef0e581202"
-preview_id = "YOUR_KV_NAMESPACE_ID_HERE"
+
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "<ENTER_WORKER_NAME>",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "observability": {
+    "enabled": true
+  },
+
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "0b1ff56789194213b0d9f3ef0e581202"
+    }
+  ]
+}
