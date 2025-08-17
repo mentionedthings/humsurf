@@ -5,9 +5,6 @@
 <header>
   <nav>
     <a href=".">Home</a>
-    <a href="./comics">Comics</a> <!-- Placeholder link -->
-    <a href="./contact">Contact</a> <!-- Placeholder link -->
-    <a href="./about">About</a>   <!-- Placeholder link -->
   </nav>
 </header>
 
