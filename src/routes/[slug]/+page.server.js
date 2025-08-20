@@ -42,6 +42,7 @@ export async function load({ params, url, request, fetch }) {
     const isCrawler = CRAWLER_AGENTS.some(agent => 
         userAgent.toLowerCase().includes(agent.toLowerCase())
     );
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent);
     
     // For crawlers, we need to ensure we have all data available
     if (isCrawler) {
@@ -68,7 +69,7 @@ export async function load({ params, url, request, fetch }) {
             customTitle,
             customDescription,
             isCrawler: true,
-            isMobile: /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent),
+            isMobile,
             fbAppId: process.env.FACEBOOK_APP_ID || '',
             absoluteImageSrc
         };
@@ -78,27 +79,9 @@ export async function load({ params, url, request, fetch }) {
     return {
         slug,
         isCrawler: false,
-        isMobile: /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent),
+        isMobile,
         fbAppId: process.env.FACEBOOK_APP_ID || ''
     };
-    
-    // Get user agent
-    const userAgent = request.headers.get('user-agent') || '';
-    
-    // Check if the request is from a known crawler
-    const isCrawler = CRAWLER_AGENTS.some(agent => 
-        userAgent.toLowerCase().includes(agent.toLowerCase())
-    );
-    
-    // Check if the request is from a mobile device
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent);
-    
-    // Prepare the image URL - ensure it's an absolute URL
-    const baseUrl = url.origin;
-    const cleanImageName = imageName ? imageName.replace(/^\/+/, '') : '';
-    const imageSrc = cleanImageName ? `/images/${cleanImageName}` : '';
-    const absoluteImageSrc = cleanImageName ? 
-        `${baseUrl.replace(/\/+$/, '')}/images/${cleanImageName}` : '';
     
     // Get the current page URL for Open Graph tags
     const pageUrl = url.href;
