@@ -27,7 +27,16 @@ export function load({ params, url, request }) {
     // Get URL parameters
     const targetUrl = url.searchParams.get('url');
     const imageName = url.searchParams.get('image');
-    const customTitle = url.searchParams.get('title') || 'Check out this link';
+    
+    // Get title from query parameter or decode it from the URL slug
+    let customTitle = url.searchParams.get('title') || 
+                     params.slug 
+                        ? params.slug
+                            .split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ')
+                        : 'Check out this link';
+    
     const customDescription = url.searchParams.get('description') || '';
     
     // Get user agent

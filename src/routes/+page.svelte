@@ -25,7 +25,8 @@
     e.preventDefault();
     const origin = window.location.origin;
     const slug = createSlug(customTitle || 'post');
-    generatedUrl = `${origin}${base}/${slug}?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&description=${encodeURIComponent(customDescription)}`;
+    // Include title both in the path and as a query parameter for better compatibility
+    generatedUrl = `${origin}${base}/${slug}?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}&description=${encodeURIComponent(customDescription)}`;
   }
 </script>
 

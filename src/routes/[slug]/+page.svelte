@@ -43,7 +43,7 @@
   <meta name="description" content={customDescription || ''} />
   
   <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="article" />
   <meta property="og:url" content={pageUrl} />
   <meta property="og:title" content={customTitle || 'Shared Content'} />
   <meta property="og:description" content={customDescription || ''} />
@@ -56,6 +56,7 @@
     <meta property="og:image:type" content="image/jpeg" />
   {/if}
   <meta property="og:site_name" content="Humsurf" />
+  <meta property="og:locale" content="en_US" />
   
   <!-- Facebook App ID (if provided) -->
   {#if fbAppId}
@@ -66,12 +67,19 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={customTitle || 'Shared Content'} />
   <meta name="twitter:description" content={customDescription || ''} />
+  <meta name="twitter:site" content="@humsurf" />
   {#if absoluteImageSrc}
     <meta name="twitter:image" content={absoluteImageSrc} />
+    <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
   {/if}
   
   <!-- Additional recommended meta tags -->
   <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#2563eb" />
+  
+  <!-- Ensure proper content type -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
 <main>
