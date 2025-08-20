@@ -31,43 +31,56 @@ function formatTitle(slug) {
     return slug
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+        .join(' ')
+        .replace(/%20/g, ' ') // Replace URL-encoded spaces
+        .replace(/\+/g, ' '); // Replace + with spaces
 }
 
 export async function load({ params, url, request, fetch }) {
     const slug = params.slug;
-    let linkData = null;
+    const userAgent = request.headers.get('user-agent') || '';
+    const isCrawler = CRAWLER_AGENTS.some(agent => 
+        userAgent.toLowerCase().includes(agent.toLowerCase())
+    );
     
-    // Try to get data from client-side storage first
-    if (import.meta.browser) {
-        try {
-            const storedData = localStorage.getItem(`link_${slug}`);
-            if (storedData) {
-                linkData = JSON.parse(storedData);
-                // Check if data is older than 24 hours
-                if (Date.now() - linkData.timestamp > 24 * 60 * 60 * 1000) {
-                    localStorage.removeItem(`link_${slug}`);
-                    linkData = null;
-                }
-            }
-        } catch (e) {
-            console.error('Error reading from localStorage:', e);
-        }
-    }
-    
-    // If no client-side data, check server-side (for SSR/crawlers)
-    if (!linkData) {
-        // In a real app, you would fetch from a database here
-        // For now, we'll just use the slug as the title
-        linkData = {
-            url: '',
-            image: '',
-            title: formatTitle(slug),
-            description: ''
+    // For crawlers, we need to ensure we have all data available
+    if (isCrawler) {
+        // Get the full URL from the request
+        const requestUrl = new URL(request.url);
+        const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+        
+        // Try to get data from the URL parameters (for backward compatibility)
+        const targetUrl = requestUrl.searchParams.get('url');
+        const imageName = requestUrl.searchParams.get('image');
+        const customTitle = requestUrl.searchParams.get('title') || formatTitle(slug);
+        const customDescription = requestUrl.searchParams.get('description') || '';
+        
+        // Prepare image URL
+        const cleanImageName = imageName ? imageName.replace(/^\/+/, '') : '';
+        const absoluteImageSrc = cleanImageName 
+            ? `${baseUrl}/images/${cleanImageName}`
+            : '';
+        
+        // For crawlers, return all data immediately
+        return {
+            redirectUrl: targetUrl || '',
+            imageName: cleanImageName,
+            customTitle,
+            customDescription,
+            isCrawler: true,
+            isMobile: /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent),
+            fbAppId: process.env.FACEBOOK_APP_ID || '',
+            absoluteImageSrc
         };
     }
     
-    const { url: targetUrl, image: imageName, title: customTitle, description: customDescription } = linkData;
+    // For regular users, use the client-side approach
+    return {
+        slug,
+        isCrawler: false,
+        isMobile: /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent),
+        fbAppId: process.env.FACEBOOK_APP_ID || ''
+    };
     
     // Get user agent
     const userAgent = request.headers.get('user-agent') || '';

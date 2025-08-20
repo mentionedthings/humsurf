@@ -25,18 +25,32 @@
     e.preventDefault();
     const origin = window.location.origin;
     const slug = createSlug(customTitle || 'post');
+    
+    // Create a clean image filename
+    const cleanImageName = imageFilename ? 
+      imageFilename.replace(/^.*[\\\/]/, '') : ''; // Remove path if present
+    
     // Store all data in localStorage and use just the slug in the URL
     const linkData = {
       url: targetUrl,
-      image: imageFilename,
+      image: cleanImageName,
       title: customTitle,
       description: customDescription,
       timestamp: Date.now()
     };
+    
+    // Also include the data in the URL for crawlers
+    const shareableUrl = `${origin}${base}/${slug}?` +
+      `url=${encodeURIComponent(targetUrl)}` +
+      `&image=${encodeURIComponent(cleanImageName)}` +
+      `&title=${encodeURIComponent(customTitle)}` +
+      `&description=${encodeURIComponent(customDescription)}`;
+    
     // Store with a 24-hour expiration
     localStorage.setItem(`link_${slug}`, JSON.stringify(linkData));
-    // Generate clean URL with just the slug
-    generatedUrl = `${origin}${base}/${slug}`;
+    
+    // Set the generated URL to the shareable version
+    generatedUrl = shareableUrl;
   }
 </script>
 

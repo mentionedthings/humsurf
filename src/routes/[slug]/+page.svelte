@@ -3,17 +3,17 @@
   
   export let data;
   
-  // Initialize state
-  let redirectUrl = '';
-  let imageSrc = '';
-  let absoluteImageSrc = '';
-  let customTitle = '';
-  let customDescription = '';
+  // Initialize state with server-side values or defaults
+  let redirectUrl = data.redirectUrl || '';
+  let imageSrc = data.imageName ? `/images/${data.imageName}` : '';
+  let absoluteImageSrc = data.absoluteImageSrc || '';
+  let customTitle = data.customTitle || '';
+  let customDescription = data.customDescription || '';
   let pageUrl = '';
-  let isCrawler = false;
-  let isMobile = false;
-  let fbAppId = '';
-  let isLoading = true;
+  let isCrawler = data.isCrawler || false;
+  let isMobile = data.isMobile || false;
+  let fbAppId = data.fbAppId || '';
+  let isLoading = !isCrawler; // Only show loading for non-crawler requests
   
   // Handle client-side data loading
   onMount(async () => {
