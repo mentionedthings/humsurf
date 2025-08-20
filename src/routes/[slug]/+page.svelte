@@ -107,57 +107,51 @@
 <svelte:head>
   <!-- Basic Meta Tags -->
   <title>{customTitle || 'Shared Content'}</title>
-  <meta name="description" content={customDescription || ''} />
+  <meta name="description" content={customDescription || 'Click to view this content'} />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content={pageUrl} />
   <meta property="og:title" content={customTitle || 'Shared Content'} />
-  <meta property="og:description" content={customDescription || ''} />
+  <meta property="og:description" content={customDescription || 'Click to view this content'} />
   <meta property="og:site_name" content="Humsurf" />
+  <meta property="og:locale" content="en_US" />
   
   {#if absoluteImageSrc}
-    <meta property="og:image" content={absoluteImageSrc} />
-    <meta property="og:image:secure_url" content={absoluteImageSrc.replace('http://', 'https://')} />
+    <!-- Ensure the image URL is absolute and uses HTTPS -->
+    {#const imageUrl = absoluteImageSrc.startsWith('http') ? absoluteImageSrc : `https://${new URL(pageUrl).host}${absoluteImageSrc}`}
+    {#const secureImageUrl = imageUrl.replace('http://', 'https://')}
+    
+    <meta property="og:image" content={secureImageUrl} />
+    <meta property="og:image:secure_url" content={secureImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={customTitle || 'Shared Content'} />
+    <meta property="og:image:type" content="image/jpeg" />
   {/if}
   
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content={pageUrl} />
-  <meta property="twitter:title" content={customTitle || 'Shared Content'} />
-  <meta property="twitter:description" content={customDescription || ''} />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@humsurf" />
+  <meta name="twitter:title" content={customTitle || 'Shared Content'} />
+  <meta name="twitter:description" content={customDescription || 'Click to view this content'} />
   {#if absoluteImageSrc}
-    <meta property="twitter:image" content={absoluteImageSrc} />
+    <meta name="twitter:image" content={secureImageUrl} />
+    <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
   {/if}
-  
-  <!-- App Links -->
-  <meta property="al:web:url" content={pageUrl} />
-  
-  <!-- Additional Open Graph Tags -->
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:locale" content="en_US" />
   
   <!-- Facebook App ID -->
   {#if fbAppId}
     <meta property="fb:app_id" content={fbAppId} />
   {/if}
   
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={customTitle || 'Shared Content'} />
-  <meta name="twitter:description" content={customDescription || ''} />
-  <meta name="twitter:site" content="@humsurf" />
-  {#if absoluteImageSrc}
-    <meta name="twitter:image" content={absoluteImageSrc} />
-    <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
-  {/if}
-  
-  <!-- Additional recommended meta tags -->
+  <!-- Additional Meta Tags -->
   <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#2563eb" />
+  <link rel="canonical" href={pageUrl} />
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://www.facebook.com" />
+  <link rel="preconnect" href="https://platform.twitter.com" />
   
   <!-- Ensure proper content type -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

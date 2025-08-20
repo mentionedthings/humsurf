@@ -26,14 +26,25 @@
     const origin = window.location.origin;
     const slug = createSlug(customTitle || 'post');
     
-    // Create a clean image filename
-    const cleanImageName = imageFilename ? 
-      imageFilename.replace(/^.*[\\\/]/, '') : ''; // Remove path if present
+    // Create a clean image URL
+    let imageUrl = '';
+    if (imageFilename) {
+      // If it's already a full URL, use it as is
+      if (imageFilename.startsWith('http')) {
+        imageUrl = imageFilename;
+      } 
+      // If it's a relative path, ensure it starts with a slash
+      else if (!imageFilename.startsWith('/')) {
+        imageUrl = `/${imageFilename.replace(/^\/+/, '')}`;
+      } else {
+        imageUrl = imageFilename;
+      }
+    }
     
     // Store all data in localStorage
     const linkData = {
       url: targetUrl,
-      image: cleanImageName,
+      image: imageUrl,
       title: customTitle,
       description: customDescription,
       timestamp: Date.now()
@@ -42,7 +53,7 @@
     // Create the shareable URL with all necessary parameters
     const shareableUrl = new URL(`${origin}${base}/${slug}`);
     shareableUrl.searchParams.set('url', encodeURIComponent(targetUrl));
-    if (cleanImageName) shareableUrl.searchParams.set('image', cleanImageName);
+    if (imageUrl) shareableUrl.searchParams.set('image', imageUrl);
     if (customTitle) shareableUrl.searchParams.set('title', customTitle);
     if (customDescription) shareableUrl.searchParams.set('description', customDescription);
     
@@ -59,13 +70,30 @@
 {#if isAuthenticated}
   <!-- Show link generation form only if authenticated -->
   <form on:submit={handleSubmit}>
-    <div>
-      <label for="urlInput">Target Website URL:</label>
-      <input id="urlInput" type="url" bind:value={targetUrl} required placeholder="https://example.com/your-post" />
+    <div class="form-group">
+      <label for="targetUrl">Target URL:</label>
+      <input 
+        type="url" 
+        id="targetUrl" 
+        bind:value={targetUrl} 
+        placeholder="https://example.com" 
+        required
+        class="form-control"
+      />
     </div>
-    <div>
-      <label for="imageInput">Image Filename (must be in `static/images`):</label>
-      <input id="imageInput" type="text" bind:value={imageFilename} required placeholder="your-image.png" />
+    
+    <div class="form-group">
+      <label for="imageFilename">Image URL (recommended size: 1200x630px):</label>
+      <input 
+        type="url" 
+        id="imageFilename" 
+        bind:value={imageFilename} 
+        placeholder="https://example.com/image.jpg or /images/example.jpg"
+        class="form-control"
+      />
+      <small class="form-text text-muted">
+        Use a full URL (https://...) or a path starting with / (e.g., /images/example.jpg)
+      </small>
     </div>
     <div>
       <label for="titleInput">Custom Title (for link preview):</label>

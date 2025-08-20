@@ -54,11 +54,27 @@ export async function load({ params, url, request, fetch }) {
     const customTitle = requestUrl.searchParams.get('title') || formatTitle(slug);
     const customDescription = requestUrl.searchParams.get('description') || 'Click to see more';
     
-    // Prepare image URL
+    // Prepare image URL - ensure it's a full URL
+    let absoluteImageSrc = '';
     const cleanImageName = imageName ? imageName.replace(/^\/+/, '') : '';
-    const absoluteImageSrc = cleanImageName 
-        ? `${baseUrl}/images/${cleanImageName}`
-        : '';
+    
+    if (cleanImageName) {
+        // If it's already a full URL, use it as is
+        if (cleanImageName.startsWith('http')) {
+            absoluteImageSrc = cleanImageName;
+        } 
+        // If it's a relative path, make it absolute
+        else if (cleanImageName.startsWith('/')) {
+            absoluteImageSrc = `${baseUrl}${cleanImageName}`;
+        }
+        // Default to /images/ directory
+        else {
+            absoluteImageSrc = `${baseUrl}/images/${cleanImageName}`;
+        }
+        
+        // Ensure the URL is using HTTPS for Facebook
+        absoluteImageSrc = absoluteImageSrc.replace('http://', 'https://');
+    }
     
     // For crawlers, return all data with proper Open Graph tags
     if (isCrawler) {
