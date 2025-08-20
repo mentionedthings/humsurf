@@ -12,10 +12,20 @@
   // Determine if authenticated based on the form action result
   $: isAuthenticated = form?.success === true;
 
+  function createSlug(text) {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-')      // Replace spaces with hyphens
+      .replace(/-+/g, '-')       // Replace multiple hyphens with single
+      .substring(0, 100);        // Limit length
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     const origin = window.location.origin;
-    generatedUrl = `${origin}${base}/post?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}&description=${encodeURIComponent(customDescription)}`;
+    const slug = createSlug(customTitle || 'post');
+    generatedUrl = `${origin}${base}/${slug}?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&description=${encodeURIComponent(customDescription)}`;
   }
 </script>
 
