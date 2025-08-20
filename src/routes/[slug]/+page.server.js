@@ -93,14 +93,9 @@ export async function load({ params, url, request, fetch }) {
         customTitle,
         customDescription,
         absoluteImageSrc,
-        pageUrl: requestUrl.href
-    };
-        absoluteImageSrc,
-        customTitle,
-        customDescription,
-        pageUrl,
-        isCrawler,
-        isMobile,
-        fbAppId
+        pageUrl: requestUrl.href,
+        siteName: 'Humsurf',
+        imageWidth: '1200',
+        imageHeight: '630'
     };
 }

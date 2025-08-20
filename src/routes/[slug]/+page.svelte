@@ -91,45 +91,6 @@
   }
 </script>
 
-<!-- Open Graph / Facebook -->
-<svelte:head>
-  {#if isCrawler}
-    <title>{customTitle}</title>
-    <meta name="description" content={customDescription} />
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={pageUrl} />
-    <meta property="og:title" content={customTitle} />
-    <meta property="og:description" content={customDescription} />
-    <meta property="og:site_name" content={siteName} />
-    
-    {#if absoluteImageSrc}
-      <meta property="og:image" content={absoluteImageSrc} />
-      <meta property="og:image:width" content={imageWidth} />
-      <meta property="og:image:height" content={imageHeight} />
-      <meta property="og:image:alt" content={customTitle} />
-    {/if}
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={pageUrl} />
-    <meta property="twitter:title" content={customTitle} />
-    <meta property="twitter:description" content={customDescription} />
-    {#if absoluteImageSrc}
-      <meta property="twitter:image" content={absoluteImageSrc} />
-    {/if}
-    
-    <!-- App Links -->
-    <meta property="al:web:url" content={pageUrl} />
-    
-    <!-- Facebook App ID -->
-    {#if fbAppId}
-      <meta property="fb:app_id" content={fbAppId} />
-    {/if}
-  {/if}
-</svelte:head>
-
 <!-- Debug Info (visible only in development) -->
 {#if import.meta.env.DEV}
   <div style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc;">
@@ -142,28 +103,44 @@
   </div>
 {/if}
 
+<!-- Combined Head Section -->
 <svelte:head>
   <!-- Basic Meta Tags -->
   <title>{customTitle || 'Shared Content'}</title>
   <meta name="description" content={customDescription || ''} />
   
   <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content="website" />
   <meta property="og:url" content={pageUrl} />
   <meta property="og:title" content={customTitle || 'Shared Content'} />
   <meta property="og:description" content={customDescription || ''} />
+  <meta property="og:site_name" content="Humsurf" />
+  
   {#if absoluteImageSrc}
     <meta property="og:image" content={absoluteImageSrc} />
     <meta property="og:image:secure_url" content={absoluteImageSrc.replace('http://', 'https://')} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={customTitle || 'Shared Content'} />
-    <meta property="og:image:type" content="image/jpeg" />
   {/if}
-  <meta property="og:site_name" content="Humsurf" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content={pageUrl} />
+  <meta property="twitter:title" content={customTitle || 'Shared Content'} />
+  <meta property="twitter:description" content={customDescription || ''} />
+  {#if absoluteImageSrc}
+    <meta property="twitter:image" content={absoluteImageSrc} />
+  {/if}
+  
+  <!-- App Links -->
+  <meta property="al:web:url" content={pageUrl} />
+  
+  <!-- Additional Open Graph Tags -->
+  <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:locale" content="en_US" />
   
-  <!-- Facebook App ID (if provided) -->
+  <!-- Facebook App ID -->
   {#if fbAppId}
     <meta property="fb:app_id" content={fbAppId} />
   {/if}
