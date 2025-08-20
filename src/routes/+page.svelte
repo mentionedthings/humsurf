@@ -25,8 +25,18 @@
     e.preventDefault();
     const origin = window.location.origin;
     const slug = createSlug(customTitle || 'post');
-    // Include title both in the path and as a query parameter for better compatibility
-    generatedUrl = `${origin}${base}/${slug}?url=${encodeURIComponent(targetUrl)}&image=${encodeURIComponent(imageFilename)}&title=${encodeURIComponent(customTitle)}&description=${encodeURIComponent(customDescription)}`;
+    // Store all data in localStorage and use just the slug in the URL
+    const linkData = {
+      url: targetUrl,
+      image: imageFilename,
+      title: customTitle,
+      description: customDescription,
+      timestamp: Date.now()
+    };
+    // Store with a 24-hour expiration
+    localStorage.setItem(`link_${slug}`, JSON.stringify(linkData));
+    // Generate clean URL with just the slug
+    generatedUrl = `${origin}${base}/${slug}`;
   }
 </script>
 

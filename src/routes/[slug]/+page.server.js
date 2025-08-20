@@ -23,21 +23,51 @@ const CRAWLER_AGENTS = [
     'Pinterest'
 ];
 
-export function load({ params, url, request }) {
-    // Get URL parameters
-    const targetUrl = url.searchParams.get('url');
-    const imageName = url.searchParams.get('image');
+// In-memory store for link data (in production, use a database)
+const linkStore = new Map();
+
+// Function to clean and format title
+function formatTitle(slug) {
+    return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+export async function load({ params, url, request, fetch }) {
+    const slug = params.slug;
+    let linkData = null;
     
-    // Get title from query parameter or decode it from the URL slug
-    let customTitle = url.searchParams.get('title') || 
-                     params.slug 
-                        ? params.slug
-                            .split('-')
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                            .join(' ')
-                        : 'Check out this link';
+    // Try to get data from client-side storage first
+    if (import.meta.browser) {
+        try {
+            const storedData = localStorage.getItem(`link_${slug}`);
+            if (storedData) {
+                linkData = JSON.parse(storedData);
+                // Check if data is older than 24 hours
+                if (Date.now() - linkData.timestamp > 24 * 60 * 60 * 1000) {
+                    localStorage.removeItem(`link_${slug}`);
+                    linkData = null;
+                }
+            }
+        } catch (e) {
+            console.error('Error reading from localStorage:', e);
+        }
+    }
     
-    const customDescription = url.searchParams.get('description') || '';
+    // If no client-side data, check server-side (for SSR/crawlers)
+    if (!linkData) {
+        // In a real app, you would fetch from a database here
+        // For now, we'll just use the slug as the title
+        linkData = {
+            url: '',
+            image: '',
+            title: formatTitle(slug),
+            description: ''
+        };
+    }
+    
+    const { url: targetUrl, image: imageName, title: customTitle, description: customDescription } = linkData;
     
     // Get user agent
     const userAgent = request.headers.get('user-agent') || '';

@@ -1,18 +1,84 @@
 <script>
+  import { onMount } from 'svelte';
+  
   export let data;
   
-  // Extract data from the server-side load function
-  const { 
-    redirectUrl, 
-    imageSrc, 
-    absoluteImageSrc, 
-    customTitle, 
-    customDescription, 
-    pageUrl, 
-    isCrawler, 
-    isMobile,
-    fbAppId 
-  } = data;
+  // Initialize state
+  let redirectUrl = '';
+  let imageSrc = '';
+  let absoluteImageSrc = '';
+  let customTitle = '';
+  let customDescription = '';
+  let pageUrl = '';
+  let isCrawler = false;
+  let isMobile = false;
+  let fbAppId = '';
+  let isLoading = true;
+  
+  // Handle client-side data loading
+  onMount(async () => {
+    const slug = window.location.pathname.split('/').pop();
+    
+    // Try to get data from localStorage first
+    try {
+      const storedData = localStorage.getItem(`link_${slug}`);
+      if (storedData) {
+        const linkData = JSON.parse(storedData);
+        
+        // Check if data is older than 24 hours
+        if (Date.now() - linkData.timestamp <= 24 * 60 * 60 * 1000) {
+          updateState(linkData);
+          return;
+        } else {
+          localStorage.removeItem(`link_${slug}`);
+        }
+      }
+    } catch (e) {
+      console.error('Error reading from localStorage:', e);
+    }
+    
+    // If no valid data in localStorage, use server data
+    updateState({
+      url: data.redirectUrl || '',
+      image: data.imageName || '',
+      title: data.customTitle || '',
+      description: data.customDescription || ''
+    });
+  });
+  
+  function updateState(linkData) {
+    const { url, image, title, description } = linkData;
+    
+    redirectUrl = url;
+    customTitle = title;
+    customDescription = description;
+    
+    // Prepare image URLs
+    const baseUrl = window.location.origin;
+    const cleanImageName = image ? image.replace(/^\/+/, '') : '';
+    imageSrc = cleanImageName ? `/images/${cleanImageName}` : '';
+    absoluteImageSrc = cleanImageName ? `${baseUrl.replace(/\/+$/, '')}/images/${cleanImageName}` : '';
+    
+    // Set page URL
+    pageUrl = window.location.href;
+    
+    // Check if mobile
+    isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    // Check if crawler (server-side only)
+    isCrawler = data.isCrawler || false;
+    
+    // Get Facebook App ID from environment
+    fbAppId = data.fbAppId || '';
+    
+    // Set loading to false
+    isLoading = false;
+    
+    // Redirect mobile users immediately if not a crawler
+    if (redirectUrl && isMobile && !isCrawler) {
+      window.location.href = redirectUrl;
+    }
+  }
   
   // Redirect delay in seconds (for non-crawler desktop users)
   const redirectDelay = 5;
