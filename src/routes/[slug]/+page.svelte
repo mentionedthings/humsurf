@@ -1,102 +1,20 @@
 <script>
-  import { onMount } from 'svelte';
-  
   export let data;
   
-  // Initialize state with server-side values or defaults
-  let redirectUrl = data.redirectUrl || '';
-  let imageSrc = data.imageName ? `/images/${data.imageName}` : '';
-  let absoluteImageSrc = data.absoluteImageSrc || '';
-  let secureImageUrl = '';
-  let customTitle = data.customTitle || '';
-  let customDescription = data.customDescription || '';
-  let pageUrl = '';
-  let isCrawler = data.isCrawler || false;
-  let isMobile = data.isMobile || false;
-  let fbAppId = data.fbAppId || '';
-  let isLoading = !isCrawler; // Only show loading for non-crawler requests
+  // Extract data from the server-side load function
+  const { 
+    redirectUrl, 
+    imageSrc, 
+    absoluteImageSrc, 
+    customTitle, 
+    customDescription, 
+    pageUrl, 
+    isCrawler, 
+    isMobile,
+    fbAppId 
+  } = data;
   
-  // Process image URL to ensure it's absolute and uses HTTPS
-  if (absoluteImageSrc) {
-    // Ensure the image URL is absolute and uses HTTPS
-    const imageUrl = absoluteImageSrc.startsWith('http') 
-      ? absoluteImageSrc 
-      : `https://${new URL(pageUrl || 'http://example.com').host}${absoluteImageSrc.startsWith('/') ? '' : '/'}${absoluteImageSrc}`;
-    
-    absoluteImageSrc = imageUrl;
-    secureImageUrl = imageUrl.replace('http://', 'https://');
-  }
-  
-  // Handle client-side data loading
-  onMount(async () => {
-    const slug = window.location.pathname.split('/').pop();
-    
-    // Try to get data from localStorage first
-    try {
-      const storedData = localStorage.getItem(`link_${slug}`);
-      if (storedData) {
-        const linkData = JSON.parse(storedData);
-        
-        // Check if data is older than 24 hours
-        if (Date.now() - linkData.timestamp <= 24 * 60 * 60 * 1000) {
-          updateState(linkData);
-          return;
-        } else {
-          localStorage.removeItem(`link_${slug}`);
-        }
-      }
-    } catch (e) {
-      console.error('Error reading from localStorage:', e);
-    }
-    
-    // If no valid data in localStorage, use server data
-    updateState({
-      url: data.redirectUrl || '',
-      image: data.imageName || '',
-      title: data.customTitle || '',
-      description: data.customDescription || ''
-    });
-  });
-  
-  function updateState(linkData) {
-    const { url, image, title, description } = linkData;
-    
-    redirectUrl = url;
-    customTitle = title;
-    customDescription = description;
-    
-    // Prepare image URLs
-    const baseUrl = window.location.origin;
-    const cleanImageName = image ? image.replace(/^\/+/, '') : '';
-    imageSrc = cleanImageName ? `/images/${cleanImageName}` : '';
-    
-    // Set page URL
-    pageUrl = window.location.href;
-    
-    // Check if mobile
-    isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    
-    // Check if crawler (server-side only)
-    isCrawler = data.isCrawler || false;
-    
-    // Get Facebook App ID from environment
-    fbAppId = data.fbAppId || '';
-    
-    // Set loading to false
-    isLoading = false;
-    
-    // Redirect mobile users immediately if not a crawler
-    if (redirectUrl && isMobile && !isCrawler) {
-      window.location.href = redirectUrl;
-    }
-  }
-  
-  // Redirect non-crawler mobile users immediately
-  if (!isCrawler && isMobile && redirectUrl) {
-    window.location.href = redirectUrl;
-  }
-  
-  // Set a delay for desktop users before redirecting
+  // Redirect delay in seconds (for non-crawler desktop users)
   const redirectDelay = 5;
   
   // Redirect non-crawler desktop users after delay
@@ -119,51 +37,45 @@
   </div>
 {/if}
 
-<!-- Combined Head Section -->
 <svelte:head>
   <!-- Basic Meta Tags -->
   <title>{customTitle || 'Shared Content'}</title>
-  <meta name="description" content={customDescription || 'Click to view this content'} />
+  <meta name="description" content={customDescription || ''} />
   
   <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="article" />
   <meta property="og:url" content={pageUrl} />
   <meta property="og:title" content={customTitle || 'Shared Content'} />
-  <meta property="og:description" content={customDescription || 'Click to view this content'} />
-  <meta property="og:site_name" content="Humsurf" />
-  <meta property="og:locale" content="en_US" />
-  
+  <meta property="og:description" content={customDescription || ''} />
   {#if absoluteImageSrc}
-    <meta property="og:image" content={secureImageUrl || absoluteImageSrc} />
-    <meta property="og:image:secure_url" content={secureImageUrl || absoluteImageSrc.replace('http://', 'https://')} />
+    <meta property="og:image" content={absoluteImageSrc} />
+    <meta property="og:image:secure_url" content={absoluteImageSrc.replace('http://', 'https://')} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={customTitle || 'Shared Content'} />
     <meta property="og:image:type" content="image/jpeg" />
   {/if}
+  <meta property="og:site_name" content="Humsurf" />
+  <meta property="og:locale" content="en_US" />
   
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@humsurf" />
-  <meta name="twitter:title" content={customTitle || 'Shared Content'} />
-  <meta name="twitter:description" content={customDescription || 'Click to view this content'} />
-  {#if absoluteImageSrc}
-    <meta name="twitter:image" content={secureImageUrl || absoluteImageSrc.replace('http://', 'https://')} />
-    <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
-  {/if}
-  
-  <!-- Facebook App ID -->
+  <!-- Facebook App ID (if provided) -->
   {#if fbAppId}
     <meta property="fb:app_id" content={fbAppId} />
   {/if}
   
-  <!-- Additional Meta Tags -->
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href={pageUrl} />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={customTitle || 'Shared Content'} />
+  <meta name="twitter:description" content={customDescription || ''} />
+  <meta name="twitter:site" content="@humsurf" />
+  {#if absoluteImageSrc}
+    <meta name="twitter:image" content={absoluteImageSrc} />
+    <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
+  {/if}
   
-  <!-- Preconnect to external domains -->
-  <link rel="preconnect" href="https://www.facebook.com" />
-  <link rel="preconnect" href="https://platform.twitter.com" />
+  <!-- Additional recommended meta tags -->
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#2563eb" />
   
   <!-- Ensure proper content type -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
