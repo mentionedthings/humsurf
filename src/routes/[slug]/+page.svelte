@@ -7,6 +7,7 @@
   let redirectUrl = data.redirectUrl || '';
   let imageSrc = data.imageName ? `/images/${data.imageName}` : '';
   let absoluteImageSrc = data.absoluteImageSrc || '';
+  let secureImageUrl = '';
   let customTitle = data.customTitle || '';
   let customDescription = data.customDescription || '';
   let pageUrl = '';
@@ -14,6 +15,17 @@
   let isMobile = data.isMobile || false;
   let fbAppId = data.fbAppId || '';
   let isLoading = !isCrawler; // Only show loading for non-crawler requests
+  
+  // Process image URL to ensure it's absolute and uses HTTPS
+  if (absoluteImageSrc) {
+    // Ensure the image URL is absolute and uses HTTPS
+    const imageUrl = absoluteImageSrc.startsWith('http') 
+      ? absoluteImageSrc 
+      : `https://${new URL(pageUrl || 'http://example.com').host}${absoluteImageSrc.startsWith('/') ? '' : '/'}${absoluteImageSrc}`;
+    
+    absoluteImageSrc = imageUrl;
+    secureImageUrl = imageUrl.replace('http://', 'https://');
+  }
   
   // Handle client-side data loading
   onMount(async () => {
@@ -57,7 +69,6 @@
     const baseUrl = window.location.origin;
     const cleanImageName = image ? image.replace(/^\/+/, '') : '';
     imageSrc = cleanImageName ? `/images/${cleanImageName}` : '';
-    absoluteImageSrc = cleanImageName ? `${baseUrl.replace(/\/+$/, '')}/images/${cleanImageName}` : '';
     
     // Set page URL
     pageUrl = window.location.href;
@@ -80,7 +91,12 @@
     }
   }
   
-  // Redirect delay in seconds (for non-crawler desktop users)
+  // Redirect non-crawler mobile users immediately
+  if (!isCrawler && isMobile && redirectUrl) {
+    window.location.href = redirectUrl;
+  }
+  
+  // Set a delay for desktop users before redirecting
   const redirectDelay = 5;
   
   // Redirect non-crawler desktop users after delay
@@ -118,12 +134,8 @@
   <meta property="og:locale" content="en_US" />
   
   {#if absoluteImageSrc}
-    <!-- Ensure the image URL is absolute and uses HTTPS -->
-    {#const imageUrl = absoluteImageSrc.startsWith('http') ? absoluteImageSrc : `https://${new URL(pageUrl).host}${absoluteImageSrc}`}
-    {#const secureImageUrl = imageUrl.replace('http://', 'https://')}
-    
-    <meta property="og:image" content={secureImageUrl} />
-    <meta property="og:image:secure_url" content={secureImageUrl} />
+    <meta property="og:image" content={secureImageUrl || absoluteImageSrc} />
+    <meta property="og:image:secure_url" content={secureImageUrl || absoluteImageSrc.replace('http://', 'https://')} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={customTitle || 'Shared Content'} />
@@ -136,7 +148,7 @@
   <meta name="twitter:title" content={customTitle || 'Shared Content'} />
   <meta name="twitter:description" content={customDescription || 'Click to view this content'} />
   {#if absoluteImageSrc}
-    <meta name="twitter:image" content={secureImageUrl} />
+    <meta name="twitter:image" content={secureImageUrl || absoluteImageSrc.replace('http://', 'https://')} />
     <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
   {/if}
   
