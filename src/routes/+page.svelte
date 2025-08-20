@@ -30,7 +30,7 @@
     const cleanImageName = imageFilename ? 
       imageFilename.replace(/^.*[\\\/]/, '') : ''; // Remove path if present
     
-    // Store all data in localStorage and use just the slug in the URL
+    // Store all data in localStorage
     const linkData = {
       url: targetUrl,
       image: cleanImageName,
@@ -39,18 +39,18 @@
       timestamp: Date.now()
     };
     
-    // Also include the data in the URL for crawlers
-    const shareableUrl = `${origin}${base}/${slug}?` +
-      `url=${encodeURIComponent(targetUrl)}` +
-      `&image=${encodeURIComponent(cleanImageName)}` +
-      `&title=${encodeURIComponent(customTitle)}` +
-      `&description=${encodeURIComponent(customDescription)}`;
+    // Create the shareable URL with all necessary parameters
+    const shareableUrl = new URL(`${origin}${base}/${slug}`);
+    shareableUrl.searchParams.set('url', encodeURIComponent(targetUrl));
+    if (cleanImageName) shareableUrl.searchParams.set('image', cleanImageName);
+    if (customTitle) shareableUrl.searchParams.set('title', customTitle);
+    if (customDescription) shareableUrl.searchParams.set('description', customDescription);
     
     // Store with a 24-hour expiration
     localStorage.setItem(`link_${slug}`, JSON.stringify(linkData));
     
     // Set the generated URL to the shareable version
-    generatedUrl = shareableUrl;
+    generatedUrl = shareableUrl.toString();
   }
 </script>
 

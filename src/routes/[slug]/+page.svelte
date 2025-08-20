@@ -91,6 +91,45 @@
   }
 </script>
 
+<!-- Open Graph / Facebook -->
+<svelte:head>
+  {#if isCrawler}
+    <title>{customTitle}</title>
+    <meta name="description" content={customDescription} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={customTitle} />
+    <meta property="og:description" content={customDescription} />
+    <meta property="og:site_name" content={siteName} />
+    
+    {#if absoluteImageSrc}
+      <meta property="og:image" content={absoluteImageSrc} />
+      <meta property="og:image:width" content={imageWidth} />
+      <meta property="og:image:height" content={imageHeight} />
+      <meta property="og:image:alt" content={customTitle} />
+    {/if}
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={pageUrl} />
+    <meta property="twitter:title" content={customTitle} />
+    <meta property="twitter:description" content={customDescription} />
+    {#if absoluteImageSrc}
+      <meta property="twitter:image" content={absoluteImageSrc} />
+    {/if}
+    
+    <!-- App Links -->
+    <meta property="al:web:url" content={pageUrl} />
+    
+    <!-- Facebook App ID -->
+    {#if fbAppId}
+      <meta property="fb:app_id" content={fbAppId} />
+    {/if}
+  {/if}
+</svelte:head>
+
 <!-- Debug Info (visible only in development) -->
 {#if import.meta.env.DEV}
   <div style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc;">
