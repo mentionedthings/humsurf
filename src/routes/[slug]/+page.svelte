@@ -1,20 +1,24 @@
 <script>
   export let data;
   
-  // Extract data from the server-side load function
+  // Set default values
+  let error = data?.error;
+  let status = data?.status || 200;
+  
+  // Extract data from the server-side load function with proper fallbacks
   const { 
-    redirectUrl, 
-    imageSrc, 
-    absoluteImageSrc, 
-    customTitle, 
+    redirectUrl = '', 
+    imageSrc = '', 
+    absoluteImageSrc = '', 
+    customTitle = 'Shared Content',
     metaTitle = customTitle,
-    customDescription, 
-    pageUrl,
-    canonicalUrl = pageUrl,
-    isCrawler, 
+    customDescription = 'Check out this content', 
+    pageUrl = '',
+    canonicalUrl = pageUrl || '',
+    isCrawler = false, 
     isFacebook = false,
-    isMobile,
-    fbAppId,
+    isMobile = false,
+    fbAppId = '',
     siteName = 'Humsurf',
     locale = 'en_US',
     twitterHandle = '@humsurf',
@@ -24,7 +28,7 @@
     publishedTime = new Date().toISOString(),
     section = 'Comics',
     tags = ['comics', 'funny', 'entertainment']
-  } = data;
+  } = data || {};
   
   // Redirect delay in seconds (for non-crawler desktop users)
   const redirectDelay = 5;
@@ -90,47 +94,21 @@
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={metaTitle || 'Shared Content'} />
-  <meta name="twitter:description" content={customDescription} />
   <meta name="twitter:site" content={twitterHandle} />
+  <meta name="twitter:creator" content={twitterHandle} />
+  <meta name="twitter:title" content={metaTitle || customTitle || 'Shared Content'} />
+  <meta name="twitter:description" content={customDescription} />
   {#if absoluteImageSrc}
     <meta name="twitter:image" content={absoluteImageSrc} />
-    <meta name="twitter:image:alt" content={metaTitle || 'Shared Content'} />
+    <meta name="twitter:image:alt" content={metaTitle || customTitle || 'Shared Content Image'} />
   {/if}
-  
-  <!-- Additional recommended meta tags -->
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#2563eb" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  
-  <!-- Ensure proper content type and viewport -->
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  
-  <!-- iOS specific -->
-  <meta name="apple-mobile-web-app-title" content={siteName} />
-  
-  <!-- Windows specific -->
-  <meta name="msapplication-TileColor" content="#2563eb" />
-  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
-  
-  <!-- PWA related -->
-  <link rel="manifest" href="/manifest.json" />
-  
-  <!-- Preconnect to external domains for better performance -->
-  <link rel="preconnect" href="https://www.facebook.com" />
-  <link rel="preconnect" href="https://platform.twitter.com" />
-  <link rel="dns-prefetch" href="https://www.facebook.com" />
-  <link rel="dns-prefetch" href="https://platform.twitter.com" />
 </svelte:head>
 
 <main>
   {#if isCrawler}
     <!-- Content for crawlers (Facebook, Twitter, etc.) -->
     <div class="crawler-content" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-      <h1 style="font-size: 2.5em; margin-bottom: 0.5em; color: #1d4ed8;">{metaTitle || 'Shared Content'}</h1>
+      <h1 style="font-size: 2.5em; margin-bottom: 0.5em; color: #1d4ed8;">{metaTitle || customTitle || 'Shared Content'}</h1>
       
       {#if absoluteImageSrc}
         <div style="margin: 1.5em 0;">
