@@ -14,19 +14,6 @@
   }
 </script>
 
-<svelte:head>
-  <title>Contact Us - Humsurf</title>
-  <meta name="description" content="Get in touch with Humsurf. We'd love to hear from you!">
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Contact Us - Humsurf" />
-  <meta property="og:description" content="Get in touch with Humsurf. We'd love to hear from you!" />
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Contact Us - Humsurf" />
-  <meta name="twitter:description" content="Get in touch with Humsurf. We'd love to hear from you!" />
-</svelte:head>
-
 <h1>Contact Us</h1>
 
 <div class="contact-container">

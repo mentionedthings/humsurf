@@ -1,34 +1,18 @@
 <script>
   export let data;
   
-  // Set default values
-  let error = data?.error;
-  let status = data?.status || 200;
-  
-  // Extract data from the server-side load function with proper fallbacks
+  // Extract data from the server-side load function
   const { 
-    redirectUrl = '', 
-    imageSrc = '', 
-    absoluteImageSrc = '', 
-    customTitle = 'Shared Content',
-    metaTitle = customTitle,
-    customDescription = 'Check out this content', 
-    pageUrl = '',
-    canonicalUrl = pageUrl || '',
-    isCrawler = false, 
-    isFacebook = false,
-    isMobile = false,
-    fbAppId = '',
-    siteName = 'Humsurf',
-    locale = 'en_US',
-    twitterHandle = '@humsurf',
-    imageWidth = 1200,
-    imageHeight = 630,
-    imageType = 'image/jpeg',
-    publishedTime = new Date().toISOString(),
-    section = 'Comics',
-    tags = ['comics', 'funny', 'entertainment']
-  } = data || {};
+    redirectUrl, 
+    imageSrc, 
+    absoluteImageSrc, 
+    customTitle, 
+    customDescription, 
+    pageUrl, 
+    isCrawler, 
+    isMobile,
+    fbAppId 
+  } = data;
   
   // Redirect delay in seconds (for non-crawler desktop users)
   const redirectDelay = 5;
@@ -54,92 +38,61 @@
 {/if}
 
 <svelte:head>
-  <!-- Canonical URL -->
-  <link rel="canonical" href={canonicalUrl} />
-  
   <!-- Basic Meta Tags -->
-  <title>{metaTitle || 'Shared Content'}</title>
-  <meta name="description" content={customDescription} />
+  <title>{customTitle || 'Shared Content'}</title>
+  <meta name="description" content={customDescription || ''} />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:url" content={pageUrl} />
-  <meta property="og:title" content={metaTitle || 'Shared Content'} />
-  <meta property="og:description" content={customDescription} />
-  <meta property="og:site_name" content={siteName} />
-  <meta property="og:locale" content={locale} />
-  
-  <!-- Article specific meta -->
-  <meta property="article:published_time" content={publishedTime} />
-  <meta property="article:section" content={section} />
-  {#each tags as tag}
-    <meta property="article:tag" content={tag} />
-  {/each}
-  
-  <!-- Image meta -->
+  <meta property="og:title" content={customTitle || 'Shared Content'} />
+  <meta property="og:description" content={customDescription || ''} />
   {#if absoluteImageSrc}
     <meta property="og:image" content={absoluteImageSrc} />
     <meta property="og:image:secure_url" content={absoluteImageSrc.replace('http://', 'https://')} />
-    <meta property="og:image:width" content={imageWidth} />
-    <meta property="og:image:height" content={imageHeight} />
-    <meta property="og:image:alt" content={metaTitle || 'Shared Content'} />
-    <meta property="og:image:type" content={imageType} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={customTitle || 'Shared Content'} />
+    <meta property="og:image:type" content="image/jpeg" />
   {/if}
+  <meta property="og:site_name" content="Humsurf" />
+  <meta property="og:locale" content="en_US" />
   
   <!-- Facebook App ID (if provided) -->
   {#if fbAppId}
     <meta property="fb:app_id" content={fbAppId} />
-    <meta property="fb:pages" content={fbAppId} />
   {/if}
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content={twitterHandle} />
-  <meta name="twitter:creator" content={twitterHandle} />
-  <meta name="twitter:title" content={metaTitle || customTitle || 'Shared Content'} />
-  <meta name="twitter:description" content={customDescription} />
+  <meta name="twitter:title" content={customTitle || 'Shared Content'} />
+  <meta name="twitter:description" content={customDescription || ''} />
+  <meta name="twitter:site" content="@humsurf" />
   {#if absoluteImageSrc}
     <meta name="twitter:image" content={absoluteImageSrc} />
-    <meta name="twitter:image:alt" content={metaTitle || customTitle || 'Shared Content Image'} />
+    <meta name="twitter:image:alt" content={customTitle || 'Shared Content'} />
   {/if}
+  
+  <!-- Additional recommended meta tags -->
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#2563eb" />
+  
+  <!-- Ensure proper content type -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
 <main>
   {#if isCrawler}
     <!-- Content for crawlers (Facebook, Twitter, etc.) -->
-    <div class="crawler-content" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-      <h1 style="font-size: 2.5em; margin-bottom: 0.5em; color: #1d4ed8;">{metaTitle || customTitle || 'Shared Content'}</h1>
-      
-      {#if absoluteImageSrc}
-        <div style="margin: 1.5em 0;">
-          <img 
-            src={absoluteImageSrc} 
-            alt={metaTitle || 'Shared Content'} 
-            style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
-          />
-        </div>
-      {/if}
-      
-      {#if customDescription}
-        <div style="font-size: 1.2em; line-height: 1.6; color: #333; margin-bottom: 1.5em;">
-          {customDescription}
-        </div>
-      {/if}
-      
-      <div style="margin-top: 2em; padding: 1em; background-color: #f8fafc; border-radius: 6px; border-left: 4px solid #1d4ed8;">
-        <p style="margin: 0; color: #4b5563;">
-          Continue reading: <a href={redirectUrl} style="color: #1d4ed8; text-decoration: none; font-weight: 500;">{redirectUrl}</a>
-        </p>
-      </div>
-      
-      {#if isFacebook}
-        <!-- Additional structured data for Facebook -->
-        <div style="display: none;">
-          <div class="fb-like" data-href={pageUrl} data-width="" data-layout="button_count" data-action="like" data-size="large" data-share="true"></div>
-          <div class="fb-comments" data-href={pageUrl} data-width="100%" data-numposts="5"></div>
-        </div>
-      {/if}
-    </div>
+    <h1>{customTitle || 'Shared Content'}</h1>
+    {#if customDescription}
+      <p>{customDescription}</p>
+    {/if}
+    {#if absoluteImageSrc}
+      <img src={absoluteImageSrc} alt={customTitle || 'Shared Content'} style="max-width: 100%; height: auto;" />
+    {/if}
+    <p>Continue to: <a href={redirectUrl}>{redirectUrl}</a></p>
   {:else if isMobile}
     <!-- Content for mobile users (should be redirected immediately) -->
     <div class="redirect-container">
