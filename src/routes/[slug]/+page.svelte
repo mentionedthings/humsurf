@@ -15,7 +15,7 @@
   } = data;
   
   // Redirect delay in seconds (for non-crawler desktop users)
-  const redirectDelay = 5;
+  const redirectDelay = 3;
   
   // Redirect non-crawler desktop users after delay
   if (!isCrawler && !isMobile && redirectUrl) {
