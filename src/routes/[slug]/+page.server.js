@@ -1,83 +1,84 @@
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 
-// List of known crawler user agents
 const CRAWLER_AGENTS = [
-    'facebookexternalhit',
-    'Twitterbot',
-    'LinkedInBot',
-    'WhatsApp',
-    'Slackbot',
-    'Discordbot',
-    'TelegramBot',
-    'Googlebot',
-    'Bingbot',
-    'Slurp',
-    'DuckDuckBot',
-    'Baiduspider',
-    'YandexBot',
-    'facebot',
-    'ia_archiver',
-    'archive.org_bot',
-    'Applebot',
-    'Pinterest'
+	'facebookexternalhit',
+	'Twitterbot',
+	'LinkedInBot',
+	'WhatsApp',
+	'Slackbot',
+	'Discordbot',
+	'TelegramBot',
+	'Googlebot',
+	'Bingbot',
+	'Slurp',
+	'DuckDuckBot',
+	'Baiduspider',
+	'YandexBot',
+	'facebot',
+	'ia_archiver',
+	'archive.org_bot',
+	'Applebot',
+	'Pinterest'
 ];
 
-export function load({ params, url, request }) {
-    // Get URL parameters
-    const targetUrl = url.searchParams.get('url');
-    const imageName = url.searchParams.get('image');
-    
-    // Get title from query parameter or decode it from the URL slug
-    let customTitle = url.searchParams.get('title') || 
-                     params.slug 
-                        ? params.slug
-                            .split('-')
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                            .join(' ')
-                        : 'Check out this link';
-    
-    const customDescription = url.searchParams.get('description') || '';
-    
-    // Get user agent
-    const userAgent = request.headers.get('user-agent') || '';
-    
-    // Check if the request is from a known crawler
-    const isCrawler = CRAWLER_AGENTS.some(agent => 
-        userAgent.toLowerCase().includes(agent.toLowerCase())
-    );
-    
-    // Check if the request is from a mobile device
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent);
-    
-    // Prepare the image URL - ensure it's an absolute URL
-    const baseUrl = url.origin;
-    const cleanImageName = imageName ? imageName.replace(/^\/+/, '') : '';
-    const imageSrc = cleanImageName ? `/images/${cleanImageName}` : '';
-    const absoluteImageSrc = cleanImageName ? 
-        `${baseUrl.replace(/\/+$/, '')}/images/${cleanImageName}` : '';
-    
-    // Get the current page URL for Open Graph tags
-    const pageUrl = url.href;
-    
-    // Get Facebook App ID from environment variables if available
-    const fbAppId = env.FACEBOOK_APP_ID || '';
-    
-    // If it's a mobile user and not a crawler, redirect immediately
-    if (isMobile && !isCrawler && targetUrl) {
-        throw redirect(302, targetUrl);
-    }
-    
-    // If it's a crawler or desktop user, return the data for the page
-    return {
-        redirectUrl: targetUrl,
-        imageSrc,
-        absoluteImageSrc,
-        customTitle,
-        customDescription,
-        pageUrl,
-        isCrawler,
-        isMobile,
-        fbAppId
-    };
+function getSafeRedirectUrl(rawUrl) {
+	if (!rawUrl) return null;
+	try {
+		const parsed = new URL(rawUrl.trim());
+		if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+			return parsed.toString();
+		}
+		return null;
+	} catch {
+		return null;
+	}
+}
+
+function getSafeImageFilename(rawName) {
+	if (!rawName) return '';
+	const baseName = rawName.trim().split('/').pop()?.split('\\').pop() || '';
+	const sanitized = baseName.replace(/[^a-zA-Z0-9._-]/g, '');
+	if (!sanitized || sanitized === '.' || sanitized === '..') {
+		return '';
+	}
+	return sanitized;
+}
+
+export function load({ url, request }) {
+	const rawRedirectUrl = url.searchParams.get('url');
+	const redirectUrl = getSafeRedirectUrl(rawRedirectUrl);
+
+	const imageName = getSafeImageFilename(url.searchParams.get('image'));
+	const customTitle = url.searchParams.get('title')?.trim() || 'Check out this link';
+	const customDescription = url.searchParams.get('description')?.trim() || '';
+
+	const userAgent = request.headers.get('user-agent') || '';
+	const lowerUa = userAgent.toLowerCase();
+
+	const isCrawler = CRAWLER_AGENTS.some((agent) => lowerUa.includes(agent.toLowerCase()));
+	const isMobile = /mobi|android|iphone|ipad|ipod/i.test(userAgent);
+
+	const baseUrl = url.origin;
+	const imageSrc = imageName ? `/images/${imageName}` : '';
+	const absoluteImageSrc = imageName ? `${baseUrl}/images/${imageName}` : '';
+	const pageUrl = url.href;
+	const fbAppId = env.FACEBOOK_APP_ID || '';
+
+	if (isMobile && !isCrawler && redirectUrl) {
+		throw redirect(302, redirectUrl);
+	}
+
+	return {
+		redirectUrl,
+		hasInvalidUrl: Boolean(rawRedirectUrl && !redirectUrl),
+		imageSrc,
+		absoluteImageSrc,
+		customTitle,
+		customDescription,
+		pageUrl,
+		isCrawler,
+		isMobile,
+		fbAppId
+	};
 }
